@@ -1,0 +1,33 @@
+.sortable {
+  cursor: pointer;
+}
+
+.sortable:hover {
+  text-decoration: underline;
+}
+
+.card {
+  border-radius: 0.75rem;
+}
+
+.card-footer {
+  border-top: 1px solid #e9ecef;
+}
+
+.modal-content {
+  border-radius: 0.75rem;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  text-decoration: underline;
+}
+
+th span {
+  font-size: 0.75rem;
+  margin-left: 4px;
+}

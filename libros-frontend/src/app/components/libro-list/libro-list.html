@@ -1,0 +1,350 @@
+<div class="container mt-5">
+
+  <!-- ================= HEADER ================= -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0">Lista de libros</h2>
+      <small class="text-muted">by: Sebastian David Blanco Rodriguez</small>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary"
+              (click)="mostrarFiltros = !mostrarFiltros">
+        {{ mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros' }}
+      </button>
+
+      <button class="btn btn-primary"
+              (click)="abrirCrear()">
+        + Nuevo libro
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= TABLA ================= -->
+  <div class="card shadow-sm">
+    <div class="card-body table-responsive">
+
+      <table class="table table-hover align-middle mb-0">
+
+        <!-- ================= HEADER ================= -->
+        <thead class="table-light">
+          <tr>
+            <th class="sortable" (click)="ordenar('nombre')">
+              Nombre {{ sort === 'nombre' ? (direction === 'asc' ? '▲' : '▼') : '' }}
+            </th>
+            <th class="sortable" (click)="ordenar('autor')">
+              Autor {{ sort === 'autor' ? (direction === 'asc' ? '▲' : '▼') : '' }}
+            </th>
+            <th class="sortable" (click)="ordenar('fechaPublicacion')">
+              Fecha {{ sort === 'fechaPublicacion' ? (direction === 'asc' ? '▲' : '▼') : '' }}
+            </th>
+            <th class="sortable text-center" (click)="ordenar('numeroEjemplares')">
+              Ejemplares {{ sort === 'numeroEjemplares' ? (direction === 'asc' ? '▲' : '▼') : '' }}
+            </th>
+            <th class="sortable text-end" (click)="ordenar('costo')">
+              Costo {{ sort === 'costo' ? (direction === 'asc' ? '▲' : '▼') : '' }}
+            </th>
+            <th class="text-center">Descripción</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+
+          <!-- ================= FILTROS ================= -->
+          <tr class="table-secondary" *ngIf="mostrarFiltros">
+
+            <!-- NOMBRE -->
+            <th>
+              <select class="form-select form-select-sm mb-1"
+                      [(ngModel)]="filterOperators.nombre">
+                <option value="contains">Contains</option>
+                <option value="notContains">Not contains</option>
+                <option value="equals">Equals</option>
+                <option value="notEquals">Not equal</option>
+                <option value="starts">Starts with</option>
+                <option value="ends">Ends with</option>
+              </select>
+              <input class="form-control form-control-sm"
+                     [(ngModel)]="filters.nombre"
+                     placeholder="Filtrar nombre">
+            </th>
+
+            <!-- AUTOR -->
+            <th>
+              <select class="form-select form-select-sm mb-1"
+                      [(ngModel)]="filterOperators.autor">
+                <option value="contains">Contains</option>
+                <option value="notContains">Not contains</option>
+                <option value="equals">Equals</option>
+                <option value="notEquals">Not equal</option>
+                <option value="starts">Starts with</option>
+                <option value="ends">Ends with</option>
+              </select>
+              <input class="form-control form-control-sm"
+                     [(ngModel)]="filters.autor"
+                     placeholder="Filtrar autor">
+            </th>
+
+            <!-- FECHA -->
+            <th>
+              <select class="form-select form-select-sm mb-1"
+                      [(ngModel)]="filterOperators.fechaPublicacion">
+                <option value="equals">Equals</option>
+                <option value="notEquals">Not equal</option>
+              </select>
+              <input type="date"
+                     class="form-control form-control-sm"
+                     [(ngModel)]="filters.fechaPublicacion">
+            </th>
+
+            <!-- EJEMPLARES -->
+            <th>
+              <select class="form-select form-select-sm mb-1"
+                      [(ngModel)]="filterOperators.numeroEjemplares">
+                <option value="equals">Equals</option>
+                <option value="notEquals">Not equal</option>
+              </select>
+              <input type="number"
+                     min="0"
+                     class="form-control form-control-sm"
+                     [(ngModel)]="filters.numeroEjemplares">
+            </th>
+
+            <!-- COSTO -->
+            <th>
+              <select class="form-select form-select-sm mb-1"
+                      [(ngModel)]="filterOperators.costo">
+                <option value="equals">Equals</option>
+                <option value="notEquals">Not equal</option>
+              </select>
+              <input type="number"
+                     min="0"
+                     step="0.0001"
+                     class="form-control form-control-sm"
+                     [(ngModel)]="filters.costo">
+            </th>
+
+            <!-- BOTONES -->
+            <th colspan="2" class="text-center align-middle">
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-primary btn-sm"
+                        (click)="aplicarFiltros()">
+                  Filtrar
+                </button>
+                <button class="btn btn-outline-secondary btn-sm"
+                        (click)="limpiarFiltros()">
+                  Limpiar
+                </button>
+              </div>
+            </th>
+
+          </tr>
+        </thead>
+
+        <!-- ================= BODY ================= -->
+        <tbody>
+          <tr *ngFor="let libro of libros">
+            <td class="fw-semibold">{{ libro.nombre }}</td>
+            <td>{{ libro.autor }}</td>
+            <td>{{ libro.fechaPublicacion | date:'yyyy-MM-dd' }}</td>
+            <td class="text-center">{{ libro.numeroEjemplares }}</td>
+            <td class="text-end">{{ libro.costo | currency:'USD' }}</td>
+
+            <td class="text-center">
+              <button class="btn btn-outline-primary btn-sm"
+                      (click)="abrirDescripcion(libro)">
+                Ver
+              </button>
+            </td>
+
+            <td class="text-center">
+              <button class="btn btn-outline-warning btn-sm me-2"
+                      (click)="abrirEditar(libro)">
+                Editar
+              </button>
+              <button class="btn btn-outline-danger btn-sm"
+                      (click)="confirmarEliminar(libro)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="libros.length === 0">
+            <td colspan="7" class="text-center text-muted py-4">
+              No hay libros registrados
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <!-- ================= PAGINACIÓN ================= -->
+    <div class="card-footer d-flex justify-content-between">
+      <small class="text-muted">
+        Página {{ page + 1 }} de {{ totalPages }}
+      </small>
+
+      <div>
+        <button class="btn btn-outline-secondary btn-sm me-2"
+                (click)="anterior()"
+                [disabled]="page === 0">
+          Anterior
+        </button>
+
+        <button class="btn btn-outline-secondary btn-sm"
+                (click)="siguiente()"
+                [disabled]="page + 1 >= totalPages">
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODAL DESCRIPCIÓN ================= -->
+<div class="modal fade show d-block"
+     *ngIf="libroSeleccionado && !mostrarModalFormulario && !mostrarModalEliminar"
+     style="background: rgba(0,0,0,.6)">
+
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content shadow-lg">
+
+      <div class="modal-header bg-primary text-white">
+        <div>
+          <h5 class="modal-title mb-0">{{ libroSeleccionado.nombre }}</h5>
+          <small class="opacity-75">{{ libroSeleccionado.autor }}</small>
+        </div>
+        <button class="btn-close btn-close-white"
+                (click)="cerrarDescripcion()"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="fw-semibold mb-2">Descripción</p>
+        <div class="border rounded p-3 bg-light"
+             style="max-height: 250px; overflow-y: auto;">
+          {{ libroSeleccionado.descripcion }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary"
+                (click)="cerrarDescripcion()">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL FORMULARIO ================= -->
+<div class="modal fade show d-block"
+     *ngIf="mostrarModalFormulario"
+     style="background: rgba(0,0,0,.5)">
+
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>{{ modoEdicion ? 'Editar libro' : 'Nuevo libro' }}</h5>
+        <button class="btn-close" (click)="cerrarFormulario()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input class="form-control"
+                 [(ngModel)]="libroSeleccionado.nombre">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Autor</label>
+          <input class="form-control"
+                 [(ngModel)]="libroSeleccionado.autor">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-control"
+                    rows="3"
+                    [(ngModel)]="libroSeleccionado.descripcion"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Fecha publicación</label>
+          <input type="date"
+                 class="form-control"
+                 [max]="maxFechaPublicacion"
+                 [(ngModel)]="libroSeleccionado.fechaPublicacion">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Ejemplares</label>
+          <input type="number"
+                 min="0"
+                 class="form-control"
+                 (keydown)="bloquearNegativos($event)"
+                 [(ngModel)]="libroSeleccionado.numeroEjemplares">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Costo</label>
+          <input type="number"
+                 min="0"
+                 step="0.0001"
+                 class="form-control"
+                 (keydown)="bloquearNegativos($event)"
+                 [(ngModel)]="libroSeleccionado.costo">
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary"
+                (click)="cerrarFormulario()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary"
+                [disabled]="!formularioValido()"
+                (click)="guardarLibro()">
+          Guardar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL ELIMINAR ================= -->
+<div class="modal fade show d-block"
+     *ngIf="mostrarModalEliminar"
+     style="background: rgba(0,0,0,.5)">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>Confirmar eliminación</h5>
+        <button class="btn-close"
+                (click)="mostrarModalEliminar = false"></button>
+      </div>
+
+      <div class="modal-body">
+        ¿Eliminar <strong>{{ libroSeleccionado?.nombre }}</strong>?
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary"
+                (click)="mostrarModalEliminar = false">
+          Cancelar
+        </button>
+        <button class="btn btn-danger"
+                (click)="eliminar()">
+          Eliminar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
