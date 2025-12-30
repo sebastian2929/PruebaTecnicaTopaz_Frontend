@@ -68,6 +68,7 @@ ng serve
 ```
 
 ### 📸 Resultado
+<img width="1910" height="808" alt="image" src="https://github.com/user-attachments/assets/0548b569-ac31-432a-b95f-203e2e2fcfa4" />
 
 
 
